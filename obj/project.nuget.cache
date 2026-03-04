@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "1X8DKcRAcAm068FKWxwLn1PeOzbMvBX2iAmKfCdscuQfKX3IihcC8Z5rKXY3iUcbNdjVHbat77LlE1GZSGsbuQ==",
+  "success": true,
+  "projectFilePath": "/home/sharku/Documents/Projects/CrossV9/benchrunner/benchrunner.csproj",
+  "expectedPackageFiles": [
+    "/home/sharku/.nuget/packages/google.protobuf/3.27.0/google.protobuf.3.27.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.aspnetcore/2.66.0/grpc.aspnetcore.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.aspnetcore.server/2.66.0/grpc.aspnetcore.server.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.aspnetcore.server.clientfactory/2.66.0/grpc.aspnetcore.server.clientfactory.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.core.api/2.66.0/grpc.core.api.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.net.client/2.66.0/grpc.net.client.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.net.clientfactory/2.66.0/grpc.net.clientfactory.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.net.common/2.66.0/grpc.net.common.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/grpc.tools/2.66.0/grpc.tools.2.66.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.dependencyinjection/6.0.0/microsoft.extensions.dependencyinjection.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/6.0.0/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.http/6.0.0/microsoft.extensions.http.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.logging/6.0.0/microsoft.extensions.logging.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.logging.abstractions/6.0.0/microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.options/6.0.0/microsoft.extensions.options.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/microsoft.extensions.primitives/6.0.0/microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "/home/sharku/.nuget/packages/zstdsharp.port/0.8.7/zstdsharp.port.0.8.7.nupkg.sha512"
+  ],
+  "logs": []
+}

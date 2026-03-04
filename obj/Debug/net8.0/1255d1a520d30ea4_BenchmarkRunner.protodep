@@ -1,0 +1,2 @@
+obj/Debug/net8.0/Protos/BenchmarkRunner.cs \
+obj/Debug/net8.0/Protos/BenchmarkRunnerGrpc.cs: Protos/BenchmarkRunner.proto

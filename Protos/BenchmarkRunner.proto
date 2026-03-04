@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package benchrunner;
+
+service BaselineService {
+  // Stream file data in, get baseline compression results back.
+  rpc RunBaselines(stream BaselineRequest) returns (BaselineResponse);
+
+  // Clear cross-file dedup hash state between benchmark runs.
+  rpc ResetState(ResetRequest) returns (ResetResponse);
+
+  // Returns CPU model, core count, total RAM, hostname.
+  rpc GetSystemInfo(SystemInfoRequest) returns (SystemInfoResponse);
+}
+
+message BaselineRequest {
+  oneof payload {
+    BaselineMetadata metadata = 1;
+    bytes chunk = 2;
+  }
+}
+
+message BaselineMetadata {
+  string file_name = 1;
+  uint32 dedup_chunk_size = 2;
+}
+
+message BaselineResponse {
+  int64 zstd3_bytes = 1;
+  int64 zstd9_bytes = 2;
+  int64 zstd19_bytes = 3;
+  int64 lz4_bytes = 4;
+  double zstd3_time_ms = 5;
+  double zstd9_time_ms = 6;
+  double zstd19_time_ms = 7;
+  double lz4_time_ms = 8;
+  int64 dedup_bytes = 9;
+  int32 dedup_unique = 10;
+  int32 dedup_total = 11;
+  int64 dedup_zstd_bytes = 12;
+  double dedup_time_ms = 13;
+  double total_time_ms = 14;
+}
+
+message ResetRequest {}
+
+message ResetResponse {
+  bool success = 1;
+}
+
+message SystemInfoRequest {}
+
+message SystemInfoResponse {
+  string cpu_model = 1;
+  int32 cpu_cores = 2;
+  int64 total_memory_bytes = 3;
+  string hostname = 4;
+  string os_info = 5;
+}
