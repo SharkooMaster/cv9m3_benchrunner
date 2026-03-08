@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("benchrunner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b621db146cea5e89f8f8853849c0b126eefc894f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bb88f8842f55ed54de952b24ce9b02f7ceed0fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("benchrunner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("benchrunner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

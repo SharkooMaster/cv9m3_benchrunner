@@ -23,6 +23,7 @@ message BaselineRequest {
 message BaselineMetadata {
   string file_name = 1;
   uint32 dedup_chunk_size = 2;
+  uint32 block_size_mb = 3;  // Independent compression block size in MB (0 = default 16 MB)
 }
 
 message BaselineResponse {

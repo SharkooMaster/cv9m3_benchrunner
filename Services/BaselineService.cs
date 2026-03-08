@@ -1,141 +1,184 @@
 using System.Diagnostics;
+using System.Threading.Channels;
 using Benchrunner;
 using Grpc.Core;
 using ZstdSharp;
 
 namespace Benchrunner.Services;
 
-/// <summary>
-/// Stream that counts bytes written and discards the data.
-/// Used as a sink for CompressionStream when we only need the compressed size.
-/// </summary>
-internal sealed class CountingStream : Stream
-{
-    public long BytesWritten { get; private set; }
-
-    public override bool CanRead => false;
-    public override bool CanSeek => false;
-    public override bool CanWrite => true;
-    public override long Length => BytesWritten;
-    public override long Position
-    {
-        get => BytesWritten;
-        set => throw new NotSupportedException();
-    }
-
-    public override void Write(byte[] buffer, int offset, int count) => BytesWritten += count;
-    public override void Write(ReadOnlySpan<byte> buffer) => BytesWritten += buffer.Length;
-    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken ct)
-    {
-        BytesWritten += count;
-        return Task.CompletedTask;
-    }
-    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken ct = default)
-    {
-        BytesWritten += buffer.Length;
-        return ValueTask.CompletedTask;
-    }
-    public override void Flush() { }
-    public override Task FlushAsync(CancellationToken ct) => Task.CompletedTask;
-    public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-    public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-    public override void SetLength(long value) => throw new NotSupportedException();
-}
-
 public class BaselineService : Benchrunner.BaselineService.BaselineServiceBase
 {
+    private const int DefaultBlockSizeMB = 16;
+    private static readonly int MaxBlockParallelism = Math.Max(2, Environment.ProcessorCount / 2);
+
     public override async Task<BaselineResponse> RunBaselines(
         IAsyncStreamReader<BaselineRequest> requestStream, ServerCallContext context)
     {
-        string fileName = "";
-        long receivedBytes = 0;
         var ct = context.CancellationToken;
+        string fileName = "";
+        int blockSizeBytes = DefaultBlockSizeMB * 1024 * 1024;
 
-        var count3 = new CountingStream();
-        var count9 = new CountingStream();
-        var count19 = new CountingStream();
-        var countLz4 = new CountingStream();
+        // Read metadata first
+        if (await requestStream.MoveNext(ct))
+        {
+            var first = requestStream.Current;
+            if (first.PayloadCase == BaselineRequest.PayloadOneofCase.Metadata)
+            {
+                fileName = first.Metadata.FileName;
+                if (first.Metadata.BlockSizeMb > 0)
+                    blockSizeBytes = (int)first.Metadata.BlockSizeMb * 1024 * 1024;
+            }
+        }
 
-        var zstd3 = new CompressionStream(count3, 3, leaveOpen: true);
-        var zstd9 = new CompressionStream(count9, 9, leaveOpen: true);
-        var zstd19 = new CompressionStream(count19, 19, leaveOpen: true);
-        var lz4 = new CompressionStream(countLz4, 1, leaveOpen: true);
+        Console.WriteLine($"[BenchRunner] RunBaselines: streaming {fileName} " +
+            $"(blockSize={blockSizeBytes / (1024 * 1024)}MB, parallelism={MaxBlockParallelism})...");
 
-        var sw3 = new Stopwatch();
-        var sw9 = new Stopwatch();
-        var sw19 = new Stopwatch();
-        var swLz4 = new Stopwatch();
         var totalSw = Stopwatch.StartNew();
 
-        try
-        {
-            while (await requestStream.MoveNext(ct))
+        // Bounded channel: block producer (receive loop) → block consumers (compressors)
+        var blockChannel = Channel.CreateBounded<byte[]>(
+            new BoundedChannelOptions(MaxBlockParallelism + 2)
             {
-                var req = requestStream.Current;
-                switch (req.PayloadCase)
+                FullMode = BoundedChannelFullMode.Wait,
+                SingleWriter = true
+            });
+
+        // Accumulate results from parallel workers
+        long totalZstd3 = 0, totalZstd9 = 0, totalZstd19 = 0, totalLz4 = 0;
+        long totalZstd3Ticks = 0, totalZstd9Ticks = 0, totalZstd19Ticks = 0, totalLz4Ticks = 0;
+        long receivedBytes = 0;
+        int blocksDone = 0;
+
+        // Worker tasks: each pulls a block, compresses at all 4 levels in parallel
+        var workers = new Task[MaxBlockParallelism];
+        for (int w = 0; w < MaxBlockParallelism; w++)
+        {
+            workers[w] = Task.Run(async () =>
+            {
+                while (await blockChannel.Reader.WaitToReadAsync(ct))
                 {
-                    case BaselineRequest.PayloadOneofCase.Metadata:
-                        fileName = req.Metadata.FileName;
-                        Console.WriteLine($"[BenchRunner] RunBaselines: streaming {fileName}...");
-                        break;
+                    while (blockChannel.Reader.TryRead(out var block))
+                    {
+                        // Compress this block at all 4 levels in parallel
+                        long z3 = 0, z9 = 0, z19 = 0, l4 = 0;
+                        long t3 = 0, t9 = 0, t19 = 0, t4 = 0;
 
-                    case BaselineRequest.PayloadOneofCase.Chunk:
-                        var data = req.Chunk.Memory;
-                        receivedBytes += data.Length;
+                        var tasks = new Task[4];
+                        tasks[0] = Task.Run(() =>
+                        {
+                            var sw = Stopwatch.StartNew();
+                            using var c = new CountingStream();
+                            using (var cs = new CompressionStream(c, 3)) cs.Write(block);
+                            sw.Stop();
+                            z3 = c.BytesWritten;
+                            t3 = sw.ElapsedTicks;
+                        }, ct);
 
-                        sw3.Start();
-                        zstd3.Write(data.Span);
-                        sw3.Stop();
+                        tasks[1] = Task.Run(() =>
+                        {
+                            var sw = Stopwatch.StartNew();
+                            using var c = new CountingStream();
+                            using (var cs = new CompressionStream(c, 9)) cs.Write(block);
+                            sw.Stop();
+                            z9 = c.BytesWritten;
+                            t9 = sw.ElapsedTicks;
+                        }, ct);
 
-                        sw9.Start();
-                        zstd9.Write(data.Span);
-                        sw9.Stop();
+                        tasks[2] = Task.Run(() =>
+                        {
+                            var sw = Stopwatch.StartNew();
+                            using var c = new CountingStream();
+                            using (var cs = new CompressionStream(c, 19)) cs.Write(block);
+                            sw.Stop();
+                            z19 = c.BytesWritten;
+                            t19 = sw.ElapsedTicks;
+                        }, ct);
 
-                        sw19.Start();
-                        zstd19.Write(data.Span);
-                        sw19.Stop();
+                        tasks[3] = Task.Run(() =>
+                        {
+                            var sw = Stopwatch.StartNew();
+                            using var c = new CountingStream();
+                            using (var cs = new CompressionStream(c, 1)) cs.Write(block);
+                            sw.Stop();
+                            l4 = c.BytesWritten;
+                            t4 = sw.ElapsedTicks;
+                        }, ct);
 
-                        swLz4.Start();
-                        lz4.Write(data.Span);
-                        swLz4.Stop();
-                        break;
+                        await Task.WhenAll(tasks);
+
+                        Interlocked.Add(ref totalZstd3, z3);
+                        Interlocked.Add(ref totalZstd9, z9);
+                        Interlocked.Add(ref totalZstd19, z19);
+                        Interlocked.Add(ref totalLz4, l4);
+                        Interlocked.Add(ref totalZstd3Ticks, t3);
+                        Interlocked.Add(ref totalZstd9Ticks, t9);
+                        Interlocked.Add(ref totalZstd19Ticks, t19);
+                        Interlocked.Add(ref totalLz4Ticks, t4);
+
+                        int done = Interlocked.Increment(ref blocksDone);
+                        if (done % 10 == 0 || done == 1)
+                            Console.WriteLine($"[BenchRunner] {fileName}: block {done} done ({block.Length / (1024 * 1024)}MB)");
+                    }
+                }
+            }, ct);
+        }
+
+        // Receive loop: accumulate gRPC chunks into block-sized buffers, push to channel
+        byte[] currentBuf = new byte[blockSizeBytes];
+        int bufOffset = 0;
+
+        while (await requestStream.MoveNext(ct))
+        {
+            var req = requestStream.Current;
+            if (req.PayloadCase != BaselineRequest.PayloadOneofCase.Chunk) continue;
+
+            var data = req.Chunk.Memory;
+            receivedBytes += data.Length;
+            int srcOffset = 0;
+
+            while (srcOffset < data.Length)
+            {
+                int toCopy = Math.Min(data.Length - srcOffset, blockSizeBytes - bufOffset);
+                data.Span.Slice(srcOffset, toCopy).CopyTo(currentBuf.AsSpan(bufOffset));
+                bufOffset += toCopy;
+                srcOffset += toCopy;
+
+                if (bufOffset == blockSizeBytes)
+                {
+                    await blockChannel.Writer.WriteAsync(currentBuf, ct);
+                    currentBuf = new byte[blockSizeBytes];
+                    bufOffset = 0;
                 }
             }
-
-            sw3.Start(); zstd3.Flush(); zstd3.Dispose(); sw3.Stop();
-            sw9.Start(); zstd9.Flush(); zstd9.Dispose(); sw9.Stop();
-            sw19.Start(); zstd19.Flush(); zstd19.Dispose(); sw19.Stop();
-            swLz4.Start(); lz4.Flush(); lz4.Dispose(); swLz4.Stop();
         }
-        finally
+
+        // Push last partial block
+        if (bufOffset > 0)
         {
-            zstd3.Dispose();
-            zstd9.Dispose();
-            zstd19.Dispose();
-            lz4.Dispose();
-            count3.Dispose();
-            count9.Dispose();
-            count19.Dispose();
-            countLz4.Dispose();
+            byte[] lastBlock = new byte[bufOffset];
+            Buffer.BlockCopy(currentBuf, 0, lastBlock, 0, bufOffset);
+            await blockChannel.Writer.WriteAsync(lastBlock, ct);
         }
 
+        blockChannel.Writer.Complete();
+        await Task.WhenAll(workers);
         totalSw.Stop();
 
-        Console.WriteLine($"[BenchRunner] Done: {fileName} ({receivedBytes / (1024.0 * 1024):F1} MB) " +
-            $"zstd3={count3.BytesWritten} zstd9={count9.BytesWritten} " +
-            $"zstd19={count19.BytesWritten} lz4={countLz4.BytesWritten} " +
+        double tickFreq = Stopwatch.Frequency;
+        Console.WriteLine($"[BenchRunner] Done: {fileName} ({receivedBytes / (1024.0 * 1024):F1} MB, {blocksDone} blocks) " +
+            $"zstd3={totalZstd3} zstd9={totalZstd9} zstd19={totalZstd19} lz4={totalLz4} " +
             $"in {totalSw.Elapsed.TotalSeconds:F1}s");
 
         return new BaselineResponse
         {
-            Zstd3Bytes = count3.BytesWritten,
-            Zstd9Bytes = count9.BytesWritten,
-            Zstd19Bytes = count19.BytesWritten,
-            Lz4Bytes = countLz4.BytesWritten,
-            Zstd3TimeMs = sw3.Elapsed.TotalMilliseconds,
-            Zstd9TimeMs = sw9.Elapsed.TotalMilliseconds,
-            Zstd19TimeMs = sw19.Elapsed.TotalMilliseconds,
-            Lz4TimeMs = swLz4.Elapsed.TotalMilliseconds,
+            Zstd3Bytes = totalZstd3,
+            Zstd9Bytes = totalZstd9,
+            Zstd19Bytes = totalZstd19,
+            Lz4Bytes = totalLz4,
+            Zstd3TimeMs = totalZstd3Ticks * 1000.0 / tickFreq,
+            Zstd9TimeMs = totalZstd9Ticks * 1000.0 / tickFreq,
+            Zstd19TimeMs = totalZstd19Ticks * 1000.0 / tickFreq,
+            Lz4TimeMs = totalLz4Ticks * 1000.0 / tickFreq,
             TotalTimeMs = totalSw.Elapsed.TotalMilliseconds,
         };
     }
@@ -205,4 +248,28 @@ public class BaselineService : Benchrunner.BaselineService.BaselineServiceBase
 
         return Task.FromResult(resp);
     }
+}
+
+/// <summary>
+/// Stream that counts bytes written and discards the data.
+/// </summary>
+internal sealed class CountingStream : Stream
+{
+    public long BytesWritten { get; private set; }
+    public override bool CanRead => false;
+    public override bool CanSeek => false;
+    public override bool CanWrite => true;
+    public override long Length => BytesWritten;
+    public override long Position
+    {
+        get => BytesWritten;
+        set => throw new NotSupportedException();
+    }
+    public override void Write(byte[] buffer, int offset, int count) => BytesWritten += count;
+    public override void Write(ReadOnlySpan<byte> buffer) => BytesWritten += buffer.Length;
+    public override void Flush() { }
+    public override Task FlushAsync(CancellationToken ct) => Task.CompletedTask;
+    public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+    public override void SetLength(long value) => throw new NotSupportedException();
 }

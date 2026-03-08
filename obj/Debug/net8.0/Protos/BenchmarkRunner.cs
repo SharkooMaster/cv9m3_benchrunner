@@ -27,30 +27,31 @@ namespace Benchrunner {
             "ChxQcm90b3MvQmVuY2htYXJrUnVubmVyLnByb3RvEgtiZW5jaHJ1bm5lciJg",
             "Cg9CYXNlbGluZVJlcXVlc3QSMQoIbWV0YWRhdGEYASABKAsyHS5iZW5jaHJ1",
             "bm5lci5CYXNlbGluZU1ldGFkYXRhSAASDwoFY2h1bmsYAiABKAxIAEIJCgdw",
-            "YXlsb2FkIj8KEEJhc2VsaW5lTWV0YWRhdGESEQoJZmlsZV9uYW1lGAEgASgJ",
-            "EhgKEGRlZHVwX2NodW5rX3NpemUYAiABKA0iyAIKEEJhc2VsaW5lUmVzcG9u",
-            "c2USEwoLenN0ZDNfYnl0ZXMYASABKAMSEwoLenN0ZDlfYnl0ZXMYAiABKAMS",
-            "FAoMenN0ZDE5X2J5dGVzGAMgASgDEhEKCWx6NF9ieXRlcxgEIAEoAxIVCg16",
-            "c3RkM190aW1lX21zGAUgASgBEhUKDXpzdGQ5X3RpbWVfbXMYBiABKAESFgoO",
-            "enN0ZDE5X3RpbWVfbXMYByABKAESEwoLbHo0X3RpbWVfbXMYCCABKAESEwoL",
-            "ZGVkdXBfYnl0ZXMYCSABKAMSFAoMZGVkdXBfdW5pcXVlGAogASgFEhMKC2Rl",
-            "ZHVwX3RvdGFsGAsgASgFEhgKEGRlZHVwX3pzdGRfYnl0ZXMYDCABKAMSFQoN",
-            "ZGVkdXBfdGltZV9tcxgNIAEoARIVCg10b3RhbF90aW1lX21zGA4gASgBIg4K",
-            "DFJlc2V0UmVxdWVzdCIgCg1SZXNldFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASAB",
-            "KAgiEwoRU3lzdGVtSW5mb1JlcXVlc3QieQoSU3lzdGVtSW5mb1Jlc3BvbnNl",
-            "EhEKCWNwdV9tb2RlbBgBIAEoCRIRCgljcHVfY29yZXMYAiABKAUSGgoSdG90",
-            "YWxfbWVtb3J5X2J5dGVzGAMgASgDEhAKCGhvc3RuYW1lGAQgASgJEg8KB29z",
-            "X2luZm8YBSABKAky9wEKD0Jhc2VsaW5lU2VydmljZRJNCgxSdW5CYXNlbGlu",
-            "ZXMSHC5iZW5jaHJ1bm5lci5CYXNlbGluZVJlcXVlc3QaHS5iZW5jaHJ1bm5l",
-            "ci5CYXNlbGluZVJlc3BvbnNlKAESQwoKUmVzZXRTdGF0ZRIZLmJlbmNocnVu",
-            "bmVyLlJlc2V0UmVxdWVzdBoaLmJlbmNocnVubmVyLlJlc2V0UmVzcG9uc2US",
-            "UAoNR2V0U3lzdGVtSW5mbxIeLmJlbmNocnVubmVyLlN5c3RlbUluZm9SZXF1",
-            "ZXN0Gh8uYmVuY2hydW5uZXIuU3lzdGVtSW5mb1Jlc3BvbnNlYgZwcm90bzM="));
+            "YXlsb2FkIlYKEEJhc2VsaW5lTWV0YWRhdGESEQoJZmlsZV9uYW1lGAEgASgJ",
+            "EhgKEGRlZHVwX2NodW5rX3NpemUYAiABKA0SFQoNYmxvY2tfc2l6ZV9tYhgD",
+            "IAEoDSLIAgoQQmFzZWxpbmVSZXNwb25zZRITCgt6c3RkM19ieXRlcxgBIAEo",
+            "AxITCgt6c3RkOV9ieXRlcxgCIAEoAxIUCgx6c3RkMTlfYnl0ZXMYAyABKAMS",
+            "EQoJbHo0X2J5dGVzGAQgASgDEhUKDXpzdGQzX3RpbWVfbXMYBSABKAESFQoN",
+            "enN0ZDlfdGltZV9tcxgGIAEoARIWCg56c3RkMTlfdGltZV9tcxgHIAEoARIT",
+            "CgtsejRfdGltZV9tcxgIIAEoARITCgtkZWR1cF9ieXRlcxgJIAEoAxIUCgxk",
+            "ZWR1cF91bmlxdWUYCiABKAUSEwoLZGVkdXBfdG90YWwYCyABKAUSGAoQZGVk",
+            "dXBfenN0ZF9ieXRlcxgMIAEoAxIVCg1kZWR1cF90aW1lX21zGA0gASgBEhUK",
+            "DXRvdGFsX3RpbWVfbXMYDiABKAEiDgoMUmVzZXRSZXF1ZXN0IiAKDVJlc2V0",
+            "UmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCCITChFTeXN0ZW1JbmZvUmVxdWVz",
+            "dCJ5ChJTeXN0ZW1JbmZvUmVzcG9uc2USEQoJY3B1X21vZGVsGAEgASgJEhEK",
+            "CWNwdV9jb3JlcxgCIAEoBRIaChJ0b3RhbF9tZW1vcnlfYnl0ZXMYAyABKAMS",
+            "EAoIaG9zdG5hbWUYBCABKAkSDwoHb3NfaW5mbxgFIAEoCTL3AQoPQmFzZWxp",
+            "bmVTZXJ2aWNlEk0KDFJ1bkJhc2VsaW5lcxIcLmJlbmNocnVubmVyLkJhc2Vs",
+            "aW5lUmVxdWVzdBodLmJlbmNocnVubmVyLkJhc2VsaW5lUmVzcG9uc2UoARJD",
+            "CgpSZXNldFN0YXRlEhkuYmVuY2hydW5uZXIuUmVzZXRSZXF1ZXN0GhouYmVu",
+            "Y2hydW5uZXIuUmVzZXRSZXNwb25zZRJQCg1HZXRTeXN0ZW1JbmZvEh4uYmVu",
+            "Y2hydW5uZXIuU3lzdGVtSW5mb1JlcXVlc3QaHy5iZW5jaHJ1bm5lci5TeXN0",
+            "ZW1JbmZvUmVzcG9uc2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.BaselineRequest), global::Benchrunner.BaselineRequest.Parser, new[]{ "Metadata", "Chunk" }, new[]{ "Payload" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.BaselineMetadata), global::Benchrunner.BaselineMetadata.Parser, new[]{ "FileName", "DedupChunkSize" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.BaselineMetadata), global::Benchrunner.BaselineMetadata.Parser, new[]{ "FileName", "DedupChunkSize", "BlockSizeMb" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.BaselineResponse), global::Benchrunner.BaselineResponse.Parser, new[]{ "Zstd3Bytes", "Zstd9Bytes", "Zstd19Bytes", "Lz4Bytes", "Zstd3TimeMs", "Zstd9TimeMs", "Zstd19TimeMs", "Lz4TimeMs", "DedupBytes", "DedupUnique", "DedupTotal", "DedupZstdBytes", "DedupTimeMs", "TotalTimeMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.ResetRequest), global::Benchrunner.ResetRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Benchrunner.ResetResponse), global::Benchrunner.ResetResponse.Parser, new[]{ "Success" }, null, null, null, null),
@@ -394,6 +395,7 @@ namespace Benchrunner {
     public BaselineMetadata(BaselineMetadata other) : this() {
       fileName_ = other.fileName_;
       dedupChunkSize_ = other.dedupChunkSize_;
+      blockSizeMb_ = other.blockSizeMb_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -427,6 +429,21 @@ namespace Benchrunner {
       }
     }
 
+    /// <summary>Field number for the "block_size_mb" field.</summary>
+    public const int BlockSizeMbFieldNumber = 3;
+    private uint blockSizeMb_;
+    /// <summary>
+    /// Independent compression block size in MB (0 = default 16 MB)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint BlockSizeMb {
+      get { return blockSizeMb_; }
+      set {
+        blockSizeMb_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -444,6 +461,7 @@ namespace Benchrunner {
       }
       if (FileName != other.FileName) return false;
       if (DedupChunkSize != other.DedupChunkSize) return false;
+      if (BlockSizeMb != other.BlockSizeMb) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -453,6 +471,7 @@ namespace Benchrunner {
       int hash = 1;
       if (FileName.Length != 0) hash ^= FileName.GetHashCode();
       if (DedupChunkSize != 0) hash ^= DedupChunkSize.GetHashCode();
+      if (BlockSizeMb != 0) hash ^= BlockSizeMb.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -479,6 +498,10 @@ namespace Benchrunner {
         output.WriteRawTag(16);
         output.WriteUInt32(DedupChunkSize);
       }
+      if (BlockSizeMb != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(BlockSizeMb);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -497,6 +520,10 @@ namespace Benchrunner {
         output.WriteRawTag(16);
         output.WriteUInt32(DedupChunkSize);
       }
+      if (BlockSizeMb != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(BlockSizeMb);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -512,6 +539,9 @@ namespace Benchrunner {
       }
       if (DedupChunkSize != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DedupChunkSize);
+      }
+      if (BlockSizeMb != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(BlockSizeMb);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -530,6 +560,9 @@ namespace Benchrunner {
       }
       if (other.DedupChunkSize != 0) {
         DedupChunkSize = other.DedupChunkSize;
+      }
+      if (other.BlockSizeMb != 0) {
+        BlockSizeMb = other.BlockSizeMb;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -558,6 +591,10 @@ namespace Benchrunner {
             DedupChunkSize = input.ReadUInt32();
             break;
           }
+          case 24: {
+            BlockSizeMb = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -583,6 +620,10 @@ namespace Benchrunner {
           }
           case 16: {
             DedupChunkSize = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            BlockSizeMb = input.ReadUInt32();
             break;
           }
         }
