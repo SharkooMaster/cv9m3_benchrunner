@@ -31,3 +31,4 @@
 /home/sharku/Documents/Projects/CrossV9/benchrunner/obj/Debug/net8.0/benchrunner.pdb
 /home/sharku/Documents/Projects/CrossV9/benchrunner/obj/Debug/net8.0/benchrunner.genruntimeconfig.cache
 /home/sharku/Documents/Projects/CrossV9/benchrunner/obj/Debug/net8.0/ref/benchrunner.dll
+/home/sharku/Documents/Projects/CrossV9/benchrunner/obj/Debug/net8.0/benchrunner.sourcelink.json

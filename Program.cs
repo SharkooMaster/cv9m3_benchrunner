@@ -10,8 +10,8 @@ builder.WebHost.ConfigureKestrel(o =>
 
 builder.Services.AddGrpc(o =>
 {
-    o.MaxReceiveMessageSize = 256 * 1024 * 1024;
-    o.MaxSendMessageSize = 256 * 1024 * 1024;
+    o.MaxReceiveMessageSize = 8 * 1024 * 1024;
+    o.MaxSendMessageSize = 8 * 1024 * 1024;
 });
 
 builder.Services.AddSingleton<BaselineService>();
